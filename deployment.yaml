@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: chartmuseum
+  name: chartmuseum
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chartmuseum
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: chartmuseum
+    spec:
+      containers:
+      - image: docker.io/chartmuseum/chartmuseum:latest
+        name: chartmuseum
+        resources: {}
+        ports:
+        - containerPort: 8080
+          name: http-port
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /charts
+          name: charts
+        env:
+        - name: STORAGE
+          value: local
+        - name: STORAGE_LOCAL_ROOTDIR
+          value: /charts
+      volumes:
+      - name: charts
+        persistentVolumeClaim:
+          claimName: chartmuseum-claim
+status: {}
